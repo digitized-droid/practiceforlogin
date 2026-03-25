@@ -9,6 +9,20 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
+html, body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+#main-content {
+  flex: 1; /* pushes footer down */
+}
+
+footer {
+  margin-top: auto;
+}
 	:root {
             --primary-blue: #003366;
             --secondary-blue: #00509d;
@@ -188,169 +202,6 @@
     }
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-
-    /* Hero Section with Large Image */
-    .hero-section {
-      position: relative;
-      width: 100%;
-      height: 600px;
-      background: #f3f4f6;
-      overflow: hidden;
-    }
-
-    .hero-image-container {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
-    }
-
-    .hero-placeholder {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #ffffff;
-      text-align: center;
-      padding: 2rem;
-    }
-
-    .hero-placeholder svg {
-      width: 120px;
-      height: 120px;
-      margin-bottom: 1.5rem;
-      opacity: 0.9;
-    }
-
-    .hero-placeholder h2 {
-      font-size: 2.5rem;
-      margin: 0 0 1rem 0;
-      font-weight: bold;
-    }
-
-    .hero-placeholder p {
-      font-size: 1.2rem;
-      margin: 0 0 2rem 0;
-      max-width: 600px;
-      opacity: 0.95;
-    }
-
-    .hero-button {
-      background: #fbbf24;
-      color: #1e3a8a;
-      padding: 1rem 2.5rem;
-      font-size: 1.1rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 10px rgba(251, 191, 36, 0.3);
-    }
-
-    .hero-button:hover {
-      background: #f59e0b;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(251, 191, 36, 0.4);
-    }
-
-    .image-note {
-      font-size: 0.9rem;
-      color: #fbbf24;
-      margin-top: 1rem;
-      font-style: italic;
-      opacity: 0.8;
-    }
-
-    /* Content Section */
-    .content-section {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 4rem 2rem;
-    }
-
-    .content-section h2 {
-      color: #1e3a8a;
-      font-size: 2.5rem;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-
-    .content-section p {
-      color: #4b5563;
-      font-size: 1.1rem;
-      line-height: 1.8;
-      text-align: center;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .accent-bar {
-      width: 80px;
-      height: 4px;
-      background: #fbbf24;
-      margin: 0 auto 2rem auto;
-      border-radius: 2px;
-    }
-
-    /* Feature Cards */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
-      margin-top: 3rem;
-    }
-
-    .feature-card {
-      background: #ffffff;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      transition: all 0.3s ease;
-      border-top: 4px solid #fbbf24;
-    }
-
-    .feature-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-    }
-
-    .feature-card h3 {
-      color: #1e3a8a;
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .feature-card p {
-      color: #6b7280;
-      font-size: 1rem;
-      text-align: left;
-    }
-   /* Set the background image */
-    .body {
-  background: url('viewcomputer.gif') no-repeat center center fixed;
-  background-size: cover;
-  height: 100%;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
-}
 
 /* Mobile breakpoint */
 @media (max-width: 768px) {
@@ -384,96 +235,6 @@
     width: 100%;
   }
 }
-/* DROPDOWN MENU */
-.dropdown{
-  position:relative;
-}
-
-.dropdown-menu{
-  display:none;
-  position:absolute;
-  top:100%;
-  left:0;
-  background:white;
-  min-width:200px;
-  list-style:none;
-  padding:8px 0;
-  border-radius:6px;
-  box-shadow:0 6px 15px rgba(0,0,0,0.15);
-  z-index:1000;
-}
-
-.dropdown-menu li{
-  width:100%;
-}
-
-.dropdown-menu a{
-  display:block;
-  padding:10px 16px;
-  color:#1e3a8a;
-  text-decoration:none;
-  font-size:0.95rem;
-}
-
-.dropdown-menu a:hover{
-  background:#f3f4f6;
-  color:#fbbf24;
-}
-
-/* show dropdown on hover (desktop) */
-.dropdown:hover .dropdown-menu{
-  display:block;
-}
-
-/* remove underline animation inside dropdown */
-.dropdown-menu a::after{
-  display:none;
-}
-/* DROPDOWN MENU */
-.dropdown{
-  position:relative;
-}
-
-.dropdown-menu{
-  display:none;
-  position:absolute;
-  top:100%;
-  left:0;
-  background:white;
-  min-width:200px;
-  list-style:none;
-  padding:8px 0;
-  border-radius:6px;
-  box-shadow:0 6px 15px rgba(0,0,0,0.15);
-  z-index:1000;
-}
-
-.dropdown-menu li{
-  width:100%;
-}
-
-.dropdown-menu a{
-  display:block;
-  padding:10px 16px;
-  color:#1e3a8a;
-  text-decoration:none;
-  font-size:0.95rem;
-}
-
-.dropdown-menu a:hover{
-  background:#f3f4f6;
-  color:#fbbf24;
-}
-
-/* show dropdown on hover (desktop) */
-.dropdown:hover .dropdown-menu{
-  display:block;
-}
-
-/* remove underline animation inside dropdown */
-.dropdown-menu a::after{
-  display:none;
-}
 
 .user-settings { position: relative; margin-left: 1rem; } 
 .gear-icon svg { width: 50px; height: 50px; display: block; } 
@@ -495,6 +256,7 @@
   background: #f3f4f6;
   align-items: center;
   justify-content: center;
+    padding: 2rem;
 }
 
 /* LOGIN BOX */
@@ -568,7 +330,7 @@
     <h2 id="auth-title">Sign In</h2>
 
     <input id="display_name" placeholder="Full Name" style="display:none;">
-    <input id="student_number" placeholder="Student Number (Mxxxx)">
+    <input id="student_number" placeholder="Student Number">
     <input id="phone" placeholder="Phone" style="display:none;">
     <input id="email" placeholder="Email">
     <input id="password" type="password" placeholder="Password">
@@ -584,7 +346,7 @@
 
 <!-- MAIN CONTENT -->
 <div id="main-content">
-  <h1>Welcome to URSM Library</h1>
+  <h1>Welcome to URSM Library, Loading...</h1>
   <p id="user-info"></p>
   <button id="logoutBtn">Logout</button>
 </div>
