@@ -656,9 +656,9 @@ async function loadUser(userId = null) {
 
   // ROLE REDIRECT (optional)
   if ((profile.role || "").toLowerCase().trim() === "admin") {
-  window.location.href = "Admin login.html";
+  window.location.href = "admin.html";
 } else {
-  window.location.href = "Home.html";
+  window.location.href = "home.html";
 }
 }
 
@@ -673,7 +673,7 @@ document.getElementById("auth-submit").addEventListener("click", async () => {
     let student_number = document.getElementById("student_number").value.trim();
 
     if (!student_number.toLowerCase().startsWith('m')) {
-      alert("Student number must start with M");
+      alert("Student number is wrong");
       setButtonState(btn, "normal");
       return;
     }
