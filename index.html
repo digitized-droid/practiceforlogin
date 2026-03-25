@@ -560,22 +560,36 @@
     
   </div>
 </header>
-<!-- AUTH MODAL -->
+
+<body>
+
+<!-- LOGIN -->
 <div id="auth-modal">
   <div id="auth-box">
     <h2 id="auth-title">Sign In</h2>
-    <input id="display_name" type="text" placeholder="Full Name" style="display:none;">
-    <input id="student_number" type="text" placeholder="Student Number">
-    <input id="phone" type="tel" placeholder="Phone Number" style="display:none;">
-    <input id="email" type="email" placeholder="Email">
+
+    <input id="display_name" placeholder="Full Name" style="display:none;">
+    <input id="student_number" placeholder="Student Number (Mxxxx)">
+    <input id="phone" placeholder="Phone" style="display:none;">
+    <input id="email" placeholder="Email">
     <input id="password" type="password" placeholder="Password">
+
     <button id="auth-submit">Submit</button>
-    <p><span id="toggle-text">No account?</span> <a href="#" id="toggle-link">Sign Up</a></p>
+
+    <p>
+      <span id="toggle-text">No account?</span>
+      <a href="#" id="toggle-link">Sign Up</a>
+    </p>
   </div>
 </div>
-<footer>
-   <p>© 2025 <span class="footer-accent">University of Rizal System Morong Campus Library</span>. All rights reserved.</p>
-  </footer>
+
+<!-- MAIN CONTENT -->
+<div id="main-content">
+  <h1>Welcome to URSM Library</h1>
+  <p id="user-info"></p>
+  <button id="logoutBtn">Logout</button>
+</div>
+
 <script>
 const SUPABASE_URL = "https://emakckalouwopodqehgn.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtYWtja2Fsb3V3b3BvZHFlaGduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1NzA3OTYsImV4cCI6MjA4MTE0Njc5Nn0.eRQMLCrL4xEb58ap8RKTOyJx8pusfbr8Ut037GpYXfk";
@@ -583,75 +597,74 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let isLogin = true;
 
-const toggleLink = document.getElementById("toggle-link");
-const submitBtn = document.getElementById("auth-submit");
+const authModal = document.getElementById("auth-modal");
+const mainContent = document.getElementById("main-content");
+const userInfo = document.getElementById("user-info");
 
-// ================= TOGGLE LOGIN / SIGNUP =================
+// ================= TOGGLE =================
 function toggleMode() {
   isLogin = !isLogin;
 
-  document.getElementById("auth-title").innerText =
-    isLogin ? "Sign In" : "Sign Up";
+  document.getElementById("auth-title").innerText = isLogin ? "Sign In" : "Sign Up";
+  document.getElementById("toggle-text").innerText = isLogin ? "No account?" : "Already have one?";
+  document.getElementById("toggle-link").innerText = isLogin ? "Sign Up" : "Sign In";
 
-  document.getElementById("toggle-text").innerText =
-    isLogin ? "No account?" : "Already have one?";
-
-  document.getElementById("toggle-link").innerText =
-    isLogin ? "Sign Up" : "Sign In";
-
-  document.getElementById("display_name").style.display =
-    isLogin ? "none" : "block";
-
-  document.getElementById("phone").style.display =
-    isLogin ? "none" : "block";
+  document.getElementById("display_name").style.display = isLogin ? "none" : "block";
+  document.getElementById("phone").style.display = isLogin ? "none" : "block";
 }
 
-toggleLink.addEventListener("click", e => {
+document.getElementById("toggle-link").addEventListener("click", e => {
   e.preventDefault();
   toggleMode();
 });
 
 // ================= BUTTON STATE =================
 function setButtonState(button, state) {
-  if (state === "loading") {
-    button.disabled = true;
-    button.textContent = "Processing...";
-  } else {
-    button.disabled = false;
-    button.textContent = "Submit";
-  }
+  button.disabled = state === "loading";
+  button.textContent = state === "loading" ? "Processing..." : "Submit";
 }
 
-// ================= LOAD USER + REDIRECT =================
-async function loadUser(userId) {
-  if (!userId) return;
+// ================= LOAD USER =================
+async function loadUser(userId = null) {
+  if (!userId) {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    userId = session?.user?.id;
+  }
+
+  if (!userId) {
+    authModal.style.display = "flex";
+    mainContent.style.display = "none";
+    return;
+  }
 
   const { data: profile, error } = await supabaseClient
     .from('profiles')
     .select('*')
     .eq('user_id', userId)
-    .single();
+    .maybeSingle();
 
   if (error || !profile) {
-    console.error("PROFILE ERROR:", error);
-    alert("Profile not found. Contact admin.");
+    alert("Profile not found");
     return;
   }
 
-  const role = (profile.role || "user").toLowerCase().trim();
+  authModal.style.display = "none";
+  mainContent.style.display = "block";
 
-  console.log("ROLE:", role);
+  userInfo.textContent = `Hello, ${profile.display_name}`;
 
-  if (role === "admin") {
-    window.location.href = "Admin login.html";
-  } else {
-    window.location.href = "Home.html";
-  }
+  // ROLE REDIRECT (optional)
+  if ((profile.role || "").toLowerCase().trim() === "admin") {
+  window.location.href = "https://digitized-droid.github.io/admin-research-repository/";
+} else {
+  window.location.href = "https://digitized-droid.github.io/research-reportsitory/";
+}
 }
 
-// ================= AUTH SUBMIT =================
-submitBtn.addEventListener("click", async () => {
-  setButtonState(submitBtn, "loading");
+// ================= LOGIN / SIGNUP =================
+document.getElementById("auth-submit").addEventListener("click", async () => {
+  const btn = document.getElementById("auth-submit");
+  setButtonState(btn, "loading");
 
   try {
     const email = document.getElementById("email").value.trim();
@@ -659,92 +672,63 @@ submitBtn.addEventListener("click", async () => {
     let student_number = document.getElementById("student_number").value.trim();
 
     if (!student_number.toLowerCase().startsWith('m')) {
-      alert("Student number must start with 'M'");
-      setButtonState(submitBtn, "normal");
+      alert("Student number must start with M");
+      setButtonState(btn, "normal");
       return;
     }
 
     student_number = student_number.replace(/^m/i, '');
 
     if (isLogin) {
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
-      // ================= LOGIN FIRST =================
-      const { data: loginData, error: loginError } =
-        await supabaseClient.auth.signInWithPassword({ email, password });
-
-      if (loginError) {
-        alert(loginError.message);
-        setButtonState(submitBtn, "normal");
+      if (error) {
+        alert(error.message);
+        setButtonState(btn, "normal");
         return;
       }
 
-      const userId = loginData.user.id;
+      const userId = data.user.id;
 
-      // ================= GET PROFILE =================
-      const { data: profile, error: profileError } = await supabaseClient
+      const { data: profile } = await supabaseClient
         .from('profiles')
         .select('*')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
-      if (profileError || !profile) {
-        alert("Account exists but profile is missing.");
-        setButtonState(submitBtn, "normal");
-        return;
-      }
-
-      const dbStudentNumber = (profile.student_number || "")
-        .replace(/^m/i, "")
-        .toLowerCase();
-
-      if (dbStudentNumber !== student_number.toLowerCase()) {
+      if (!profile || profile.student_number !== student_number) {
+        await supabaseClient.auth.signOut();
         alert("Incorrect student number");
-        setButtonState(submitBtn, "normal");
+        setButtonState(btn, "normal");
         return;
       }
 
-      // ✅ REDIRECT
       await loadUser(userId);
 
     } else {
-      // ================= SIGNUP =================
       const display_name = document.getElementById("display_name").value.trim();
       const phone = document.getElementById("phone").value.trim();
 
-      const { data: signUpData, error: signUpError } =
-        await supabaseClient.auth.signUp({
-          email,
-          password
-        });
+      const { data, error } = await supabaseClient.auth.signUp({ email, password });
 
-      if (signUpError) {
-        alert(signUpError.message);
-        setButtonState(submitBtn, "normal");
+      if (error) {
+        alert(error.message);
+        setButtonState(btn, "normal");
         return;
       }
 
-      const user = signUpData.user;
-
-      // ⚠️ IMPORTANT: insert profile
-      if (user) {
-        const { error: insertError } = await supabaseClient
-          .from('profiles')
-          .insert({
-            user_id: user.id,
-            email: email,
-            student_number: student_number,
-            display_name: display_name,
-            phone: phone,
-            role: "user"
-          });
-
-        if (insertError) {
-          console.error(insertError);
-          alert("Account created but profile failed.");
-        }
+      if (data.user) {
+        await supabaseClient.from('profiles').insert({
+          user_id: data.user.id,
+          email,
+          student_number,
+          display_name,
+          phone,
+          role: "user"
+        });
       }
 
-      alert("Account created! Check your email to confirm.");
+      alert("Account created! Check email.");
     }
 
   } catch (err) {
@@ -752,15 +736,22 @@ submitBtn.addEventListener("click", async () => {
     alert("Unexpected error");
   }
 
-  setButtonState(submitBtn, "normal");
+  setButtonState(btn, "normal");
 });
 
-// ================= AUTO LOGIN CHECK =================
-supabaseClient.auth.onAuthStateChange(async (event, session) => {
-  if (session?.user) {
-    await loadUser(session.user.id);
-  }
+// ================= LOGOUT =================
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  await supabaseClient.auth.signOut();
+  loadUser();
 });
+
+// ================= AUTO SESSION =================
+supabaseClient.auth.onAuthStateChange(() => {
+  loadUser();
+});
+
+// INITIAL LOAD
+loadUser();
 </script>
 
 </body>
