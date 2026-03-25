@@ -22,7 +22,6 @@
 			--max: 1240px;
         }
 
-
     body {
 	font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--soft-white);
@@ -189,6 +188,16 @@
       font-weight: bold;
     }
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
     /* Hero Section with Large Image */
     .hero-section {
       position: relative;
@@ -477,11 +486,67 @@
 .settings-content button { width: 100%; padding: 6px; margin-bottom: 8px; background: #1e3a8a; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem; } 
 .settings-content button:hover { background: #2563eb; } #logoutBtn { display: block; margin-left: auto; /* pushes it to the right */ background: #1e3a8a; border-radius: 5px; color: white; margin-top: 10px; } 
 #logoutBtn:hover { background:white; border-radius: 5px; color:#1e3a8a; } 
-/* AUTH MODAL */ 
-#auth-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; } 
-#auth-box { background: white; padding: 2rem; border-radius: 12px; width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); } 
-#auth-box input { width: 100%; margin: 10px 0; padding: 10px; } 
-#auth-box button { width: 100%; padding: 10px; margin-top: 10px; background: #1e3a8a; color: white; border: none; cursor: pointer; } 
+
+/* AUTH MODAL BACKGROUND */
+#auth-modal {
+  display: flex;
+  position: relative; /* remove fixed */
+  width: 100%;
+  height: 100vh;
+  background: #f3f4f6;
+  align-items: center;
+  justify-content: center;
+}
+
+/* LOGIN BOX */
+#auth-box {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 350px;
+  text-align: center;
+  border: 2px solid #4f46e5; /* purple border */
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* TITLE */
+#auth-box h2 {
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+/* INPUT FIELDS */
+#auth-box input {
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 0.95rem;
+}
+
+#auth-box input:focus {
+  border-color: #4f46e5;
+}
+
+/* BUTTON */
+#auth-box button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  background: #fbbf24; /* yellow */
+  color: black;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#auth-box button:hover {
+  background: #f59e0b;
+}
   </style>
    <style>@view-transition { navigation: auto; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
@@ -492,92 +557,9 @@
     <header>
   <div class="container header-container">
     <div class="brand"><img src="ursm logo.png" alt="URS Logo" class="myImage"></div>
-    <nav>
-      <ul class="nav-menu">
-        <li><a href="index.html">Home</a></li>
-        <li class="dropdown"><a href="#" class="dropdown-toggle">About</a>
-          <ul class="dropdown-menu">
-            <li><a href="abouturs.html">About URS</a></li>
-            <li><a href="aboutcoe.html">About COE</a></li>
-            <li><a href="aboutlibrary.html">About Library</a></li>
-            <li><a href="aboutresearchers.html">About Researchers</a></li>
-          </ul>
-        </li>
-        <li><a href="publication.html">Collection</a></li>
-        <li><a href="inquire.html">Contact</a></li>
-		
-		
-		<!-- Temporary Admin button -->
-		<li><a id="adminPanel" href="admin login.html" style="display:none;">Admin Page</a></li>
-		
-		
-        <div class="user-settings">
-          <div class="gear-icon" id="gearToggle">
-  <svg viewBox="-7.04 -7.04 78.08 78.08" xmlns="http://www.w3.org/2000/svg">
-    <path d="M45,14.67l-2.76,2a1,1,0,0,1-1,.11L37.65,15.3a1,1,0,0,1-.61-.76l-.66-3.77a1,1,0,0,0-1-.84H30.52a1,1,0,0,0-1,.77l-.93,3.72a1,1,0,0,1-.53.65l-3.3,1.66a1,1,0,0,1-1-.08l-3-2.13a1,1,0,0,0-1.31.12l-3.65,3.74a1,1,0,0,0-.13,1.26l1.87,2.88a1,1,0,0,1,.1.89L16.34,27a1,1,0,0,1-.68.63l-3.85,1.06a1,1,0,0,0-.74,1v4.74a1,1,0,0,0,.8,1l3.9.8a1,1,0,0,1,.72.57l1.42,3.15a1,1,0,0,1-.05.92l-2.13,3.63a1,1,0,0,0,.17,1.24L19.32,49a1,1,0,0,0,1.29.09L23.49,47a1,1,0,0,1,1-.1l3.74,1.67a1,1,0,0,1,.59.75l.66,3.79a1,1,0,0,0,1,.84h4.89a1,1,0,0,0,1-.86l.58-4a1,1,0,0,1,.58-.77l3.58-1.62a1,1,0,0,1,1,.09l3.14,2.12a1,1,0,0,0,1.3-.15L50,45.06a1,1,0,0,0,.09-1.27l-2.08-3a1,1,0,0,1-.09-1l1.48-3.43a1,1,0,0,1,.71-.59L53.77,35a1,1,0,0,0,.8-1V29.42a1,1,0,0,0-.8-1l-3.72-.78a1,1,0,0,1-.73-.62l-1.45-3.65a1,1,0,0,1,.11-.94l2.15-3.14A1,1,0,0,0,50,18l-3.71-3.25A1,1,0,0,0,45,14.67Z" 
-          stroke="#ffffff" stroke-width="2" fill="none"/>
-    <circle cx="32.82" cy="31.94" r="9.94" 
-            stroke="#ffffff" stroke-width="2" fill="none"/>
-  </svg>
-</div>
-          <div class="settings-dropdown" id="settingsDropdown">
-            <div class="settings-header"><span id="user-info">Not logged in</span></div>
-            <hr>
-            <div class="settings-content">
-              <input id="new-username" type="text" placeholder="New Username"><button id="change-username-btn">Change Username</button>
-              <input id="new-email" type="email" placeholder="New Email"><button id="change-email-btn">Change Email</button>
-              <input id="new-password" type="password" placeholder="New Password"><button id="change-password-btn">Change Password</button>
-            </div>
-            <hr>
-            <button id="logoutBtn">Logout</button>
-          </div>
-        </div>
-      </ul>
-    </nav>
+    
   </div>
 </header>
-<div class="body">
-  </div>
-  <!-- HERO -->
-  <main>
-   <section id="home" class="hero-section">
-    <div class="hero-image-container"><!-- Replace this section with your own image -->
-     <div class="hero-placeholder">
-     <svg viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /> <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
-      <h2 id="hero-title">Welcome to our digital space</h2>
-      <p id="hero-subtitle">open-access digital platform dedicated to collecting, preserving, and sharing scholarly research.</p>
-      <a href="inquire.html">
-      <button class="hero-button" id="hero-button">Inquire</button>
-      </a>
-     </div>
-    </div>
-   </section>
-   <section class="content-section">
-    <h2>Explore our Collection</h2>
-    <div class="accent-bar"></div>
-    <p>Browse through our diverse collection of resources to explore research papers, publications, datasets, and scholarly materials, and discover new programs, initiatives, and opportunities designed to support learning, innovation, and academic growth.</p>
-    <div class="features-grid">
-     <div class="feature-card">
-      <h3>Digital Access</h3>
-      <p>Enjoy free and unrestricted access to a wide range of high-quality research materials, ensuring that knowledge remains open, accessible, and available to everyone without barriers</p>
-     </div>
-	 <div class="feature-card">
-      <h3>Research & Resources</h3>
-      <p>Access academic materials, references, and digital tools designed for students, educators, and researchers.</p>
-     </div>
-     <div class="feature-card">
-      <h3>Reliable & Secure</h3>
-      <p>Ensure long-term digital preservation of research outputs through secure, reliable storage systems designed to protect scholarly work and maintain its integrity and accessibility for future generations.</p>
-     </div>
-    </div>
-   </section>
-  </main>
-  
-  <!-- FOOTER (unchanged) -->
- <footer>
-   <p>© 2025 <span class="footer-accent">University of Rizal System Morong Campus Library</span>. All rights reserved.</p>
-  </footer>
 <!-- AUTH MODAL -->
 <div id="auth-modal">
   <div id="auth-box">
@@ -591,105 +573,84 @@
     <p><span id="toggle-text">No account?</span> <a href="#" id="toggle-link">Sign Up</a></p>
   </div>
 </div>
+<footer>
+   <p>© 2025 <span class="footer-accent">University of Rizal System Morong Campus Library</span>. All rights reserved.</p>
+  </footer>
 <script>
 const SUPABASE_URL = "https://emakckalouwopodqehgn.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtYWtja2Fsb3V3b3BvZHFlaGduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1NzA3OTYsImV4cCI6MjA4MTE0Njc5Nn0.eRQMLCrL4xEb58ap8RKTOyJx8pusfbr8Ut037GpYXfk";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let isLogin = true;
-const authModal = document.getElementById("auth-modal");
-const contentDiv = document.body;
+
 const toggleLink = document.getElementById("toggle-link");
 const submitBtn = document.getElementById("auth-submit");
-const logoutBtn = document.getElementById("logoutBtn");
-const userInfo = document.getElementById("user-info");
 
+// ================= TOGGLE LOGIN / SIGNUP =================
 function toggleMode() {
   isLogin = !isLogin;
-  document.getElementById("auth-title").innerText = isLogin ? "Sign In" : "Sign Up";
-  document.getElementById("toggle-text").innerText = isLogin ? "No account?" : "Already have one?";
-  document.getElementById("display_name").style.display = isLogin ? "none" : "block";
-  document.getElementById("phone").style.display = isLogin ? "none" : "block";
-  document.getElementById("student_number").style.display = "block";
-}
-toggleLink.addEventListener("click", e=>{ e.preventDefault(); toggleMode(); });
 
-function setButtonState(button,state){
-  if(state==="loading"){ button.disabled=true; button.textContent="Processing..."; }
-  else { button.disabled=false; button.textContent="Submit"; }
-}
+  document.getElementById("auth-title").innerText =
+    isLogin ? "Sign In" : "Sign Up";
 
-async function checkUserAccess() {
-  const { data: { session } } = await supabaseClient.auth.getSession();
+  document.getElementById("toggle-text").innerText =
+    isLogin ? "No account?" : "Already have one?";
 
-  // ❌ NOT LOGGED IN → REDIRECT
-  if (!session) {
-    window.location.href = "index.html";
-    return null;
-  }
+  document.getElementById("toggle-link").innerText =
+    isLogin ? "Sign Up" : "Sign In";
 
-  return session.user;
+  document.getElementById("display_name").style.display =
+    isLogin ? "none" : "block";
+
+  document.getElementById("phone").style.display =
+    isLogin ? "none" : "block";
 }
 
-async function loadUser(userId = null) {
-  try {
+toggleLink.addEventListener("click", e => {
+  e.preventDefault();
+  toggleMode();
+});
 
-    if (!userId) {
-      const { data: { user } } = await supabaseClient.auth.getUser();
-      if (!user) {
-        showUserUI();
-        return;
-      }
-      userId = user.id;
-    }
-
-    const { data: profile, error } = await supabaseClient
-      .from('profiles')
-      .select('*')
-      .eq('user_id', userId) // ✅ FIXED
-      .single();
-
-    if (error) {
-      console.error("PROFILE FETCH ERROR:", error);
-      showUserUI();
-      return;
-    }
-
-    if (!profile) {
-      console.warn("PROFILE IS NULL");
-      showUserUI();
-      return;
-    }
-
-    console.log("PROFILE:", profile);
-
-    const role = (profile.role || "user").toLowerCase().trim();
-
-    if (role === "admin") {
-      showAdminUI();
-    } else {
-      showUserUI();
-    }
-
-    logoutBtn.style.display = "block";
-    authModal.style.display = "none";
-
-  } catch (err) {
-    console.error("loadUser crashed:", err);
-    showUserUI(); // fallback so UI still works
+// ================= BUTTON STATE =================
+function setButtonState(button, state) {
+  if (state === "loading") {
+    button.disabled = true;
+    button.textContent = "Processing...";
+  } else {
+    button.disabled = false;
+    button.textContent = "Submit";
   }
 }
 
-//function that seperates admin contro ui from user ui
-function showAdminUI(){
-  document.getElementById("adminPanel").style.display = "block";
+// ================= LOAD USER + REDIRECT =================
+async function loadUser(userId) {
+  if (!userId) return;
+
+  const { data: profile, error } = await supabaseClient
+    .from('profiles')
+    .select('*')
+    .eq('user_id', userId)
+    .single();
+
+  if (error || !profile) {
+    console.error("PROFILE ERROR:", error);
+    alert("Failed to load profile.");
+    return;
+  }
+
+  const role = (profile.role || "user").toLowerCase().trim();
+
+  console.log("ROLE:", role);
+
+  // ✅ REDIRECTION
+  if (role === "admin") {
+    window.location.href = "https://digitized-droid.github.io/practiceforloginadminwe/";
+  } else {
+    window.location.href = "https://digitized-droid.github.io/practiceforlogin/";
+  }
 }
 
-function showUserUI(){
-  document.getElementById("adminPanel").style.display = "none";
-}
-
-// AUTH SUBMIT
+// ================= AUTH SUBMIT =================
 submitBtn.addEventListener("click", async () => {
   setButtonState(submitBtn, "loading");
 
@@ -699,34 +660,35 @@ submitBtn.addEventListener("click", async () => {
     let student_number = document.getElementById("student_number").value.trim();
 
     if (!student_number.toLowerCase().startsWith('m')) {
-      alert("Student number missing/wrong");
-      setButtonState(submitBtn, "error");
+      alert("Student number is wrong");
+      setButtonState(submitBtn, "normal");
       return;
     }
 
     student_number = student_number.replace(/^m/i, '');
 
     if (isLogin) {
-      // 🔍 CHECK student number FIRST
-      const { data: profile, error: profileError } = await supabaseClient
+
+      // 🔍 CHECK PROFILE FIRST
+      const { data: profiles, error: profileError } = await supabaseClient
         .from('profiles')
         .select('user_id, student_number, email')
         .eq('email', email)
         .single();
 
-      if (profileError || !profile) {
+      if (profileError || !profiles) {
         alert("Account not found.");
-        setButtonState(submitBtn, "error");
+        setButtonState(submitBtn, "normal");
         return;
       }
 
-      const dbStudentNumber = (profile.student_number || "")
+      const dbStudentNumber = (profiles.student_number || "")
         .replace(/^m/i, "")
         .toLowerCase();
 
       if (dbStudentNumber !== student_number.toLowerCase()) {
         alert("Incorrect student number");
-        setButtonState(submitBtn, "error");
+        setButtonState(submitBtn, "normal");
         return;
       }
 
@@ -736,14 +698,15 @@ submitBtn.addEventListener("click", async () => {
 
       if (loginError) {
         alert(loginError.message);
-        setButtonState(submitBtn, "error");
+        setButtonState(submitBtn, "normal");
         return;
       }
 
+      // ✅ REDIRECT AFTER LOGIN
       await loadUser(loginData.user.id);
 
     } else {
-      // ✅ SIGN UP
+      // ================= SIGNUP =================
       const display_name = document.getElementById("display_name").value.trim();
       const phone = document.getElementById("phone").value.trim();
 
@@ -757,54 +720,27 @@ submitBtn.addEventListener("click", async () => {
 
       if (error) {
         alert(error.message);
-        setButtonState(submitBtn, "error");
+        setButtonState(submitBtn, "normal");
         return;
       }
 
       alert("Account created! Check your email to confirm.");
     }
 
-    setButtonState(submitBtn, "normal");
-
   } catch (err) {
     console.error(err);
     alert("Unexpected error");
-    setButtonState(submitBtn, "error");
+  }
+
+  setButtonState(submitBtn, "normal");
+});
+
+// ================= AUTO LOGIN CHECK =================
+supabaseClient.auth.onAuthStateChange(async (event, session) => {
+  if (session?.user) {
+    await loadUser(session.user.id);
   }
 });
-
-// LOGOUT
-logoutBtn.addEventListener("click", async ()=>{ await supabaseClient.auth.signOut(); loadUser(); });
-
-// REAL-TIME AUTH
-supabaseClient.auth.onAuthStateChange((event, session)=>{ loadUser(); });
-
-// SETTINGS DROPDOWN
-const gear=document.getElementById("gearToggle");
-const settingsDropdown=document.getElementById("settingsDropdown");
-gear.addEventListener("click", ()=>{ settingsDropdown.style.display = settingsDropdown.style.display==="block"?"none":"block"; });
-document.addEventListener("click", e=>{ if(!gear.contains(e.target) && !settingsDropdown.contains(e.target)) settingsDropdown.style.display="none"; });
-
-// CHANGE USERNAME/EMAIL/PASSWORD
-document.getElementById("change-username-btn").addEventListener("click", async ()=>{
-  const newUsername=document.getElementById("new-username").value.trim(); if(!newUsername){ alert("Enter valid username"); return; }
-  const { data:{ user } } = await supabaseClient.auth.getUser(); if(!user) return alert("Not logged in");
-  const { error } = await supabaseClient.from("profiles").update({ display_name:newUsername }).eq("user_id", user.id);
-  if(error) return alert(error.message); alert("Username updated!"); loadUser();
-});
-document.getElementById("change-email-btn").addEventListener("click", async ()=>{
-  const newEmail=document.getElementById("new-email").value.trim(); if(!newEmail){ alert("Enter valid email"); return; }
-  const { error } = await supabaseClient.auth.updateUser({ email:newEmail }); if(error) return alert(error.message);
-  alert("Check your new email to confirm.");
-});
-document.getElementById("change-password-btn").addEventListener("click", async ()=>{
-  const newPassword=document.getElementById("new-password").value; if(newPassword.length<6){ alert("Password min 6 chars"); return; }
-  const { error } = await supabaseClient.auth.updateUser({ password:newPassword }); if(error) return alert(error.message);
-  alert("Password updated!");
-});
-
-// PAGE LOAD CHECK
-loadUser();
 </script>
 
 </body>
