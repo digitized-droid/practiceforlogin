@@ -634,7 +634,7 @@ async function loadUser(userId) {
 
   if (error || !profile) {
     console.error("PROFILE ERROR:", error);
-    alert("Failed to load profile.");
+    alert("Profile not found. Contact admin.");
     return;
   }
 
@@ -642,7 +642,6 @@ async function loadUser(userId) {
 
   console.log("ROLE:", role);
 
- // ✅ REDIRECTION
   if (role === "admin") {
     window.location.href = "https://digitized-droid.github.io/admin-research-repository/";
   } else {
@@ -660,7 +659,7 @@ submitBtn.addEventListener("click", async () => {
     let student_number = document.getElementById("student_number").value.trim();
 
     if (!student_number.toLowerCase().startsWith('m')) {
-      alert("Student number is wrong");
+      alert("Student number must start with 'M'");
       setButtonState(submitBtn, "normal");
       return;
     }
@@ -669,30 +668,7 @@ submitBtn.addEventListener("click", async () => {
 
     if (isLogin) {
 
-      // 🔍 CHECK PROFILE FIRST
-      const { data: profiles, error: profileError } = await supabaseClient
-        .from('profiles')
-        .select('user_id, student_number, email')
-        .eq('email', email)
-        .single();
-
-      if (profileError || !profiles) {
-        alert("Account not found.");
-        setButtonState(submitBtn, "normal");
-        return;
-      }
-
-      const dbStudentNumber = (profiles.student_number || "")
-        .replace(/^m/i, "")
-        .toLowerCase();
-
-      if (dbStudentNumber !== student_number.toLowerCase()) {
-        alert("Incorrect student number");
-        setButtonState(submitBtn, "normal");
-        return;
-      }
-
-      // ✅ LOGIN
+      // ================= LOGIN FIRST =================
       const { data: loginData, error: loginError } =
         await supabaseClient.auth.signInWithPassword({ email, password });
 
@@ -702,26 +678,70 @@ submitBtn.addEventListener("click", async () => {
         return;
       }
 
-      // ✅ REDIRECT AFTER LOGIN
-      await loadUser(loginData.user.id);
+      const userId = loginData.user.id;
+
+      // ================= GET PROFILE =================
+      const { data: profile, error: profileError } = await supabaseClient
+        .from('profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (profileError || !profile) {
+        alert("Account exists but profile is missing.");
+        setButtonState(submitBtn, "normal");
+        return;
+      }
+
+      const dbStudentNumber = (profile.student_number || "")
+        .replace(/^m/i, "")
+        .toLowerCase();
+
+      if (dbStudentNumber !== student_number.toLowerCase()) {
+        alert("Incorrect student number");
+        setButtonState(submitBtn, "normal");
+        return;
+      }
+
+      // ✅ REDIRECT
+      await loadUser(userId);
 
     } else {
       // ================= SIGNUP =================
       const display_name = document.getElementById("display_name").value.trim();
       const phone = document.getElementById("phone").value.trim();
 
-      const { error } = await supabaseClient.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { display_name, phone, student_number }
-        }
-      });
+      const { data: signUpData, error: signUpError } =
+        await supabaseClient.auth.signUp({
+          email,
+          password
+        });
 
-      if (error) {
-        alert(error.message);
+      if (signUpError) {
+        alert(signUpError.message);
         setButtonState(submitBtn, "normal");
         return;
+      }
+
+      const user = signUpData.user;
+
+      // ⚠️ IMPORTANT: insert profile
+      if (user) {
+        const { error: insertError } = await supabaseClient
+          .from('profiles')
+          .insert({
+            user_id: user.id,
+            email: email,
+            student_number: student_number,
+            display_name: display_name,
+            phone: phone,
+            role: "user"
+          });
+
+        if (insertError) {
+          console.error(insertError);
+          alert("Account created but profile failed.");
+        }
       }
 
       alert("Account created! Check your email to confirm.");
