@@ -611,7 +611,7 @@ async function enforceAdmin() {
 
     // ❌ Not logged in → instant redirect
     if (!session) {
-      window.location.replace("Main log.html");
+      window.location.href("Main log.html");
       return;
     }
 
@@ -623,7 +623,7 @@ async function enforceAdmin() {
 
     // ❌ Not admin → instant redirect
     if (!profile || profile.role !== "admin") {
-      window.location.replace("index.html");
+      window.location.href("index.html");
       return;
     }
 
@@ -632,7 +632,7 @@ async function enforceAdmin() {
 
   } catch (err) {
     // Fail-safe redirect (no alerts)
-    window.location.replace("index.html");
+    window.location.href("index.html");
   }
 }
 
