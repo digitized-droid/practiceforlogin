@@ -644,49 +644,53 @@ async function checkUserAccess() {
   return session.user;
 }
 
-async function loadUser(userId=null){
+async function loadUser(userId = null) {
+  try {
 
-  // 🔥 BLOCK NON-LOGGED USERS
-  const { data: profile, error } = await supabaseClient
-  .from('profiles')
-  .select('*')
-  .eq('user_id', user)
-  .single();
+    if (!userId) {
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (!user) {
+        showUserUI();
+        return;
+      }
+      userId = user.id;
+    }
 
-// ✅ HANDLE ERROR
-if (error) {
-  console.error("PROFILE FETCH ERROR:", error);
-  showUserUI();
-  alert("Profile load failed. See console.");
-  return;
-}
+    const { data: profile, error } = await supabaseClient
+      .from('profiles')
+      .select('*')
+      .eq('user_id', userId) // ✅ FIXED
+      .single();
 
-// ✅ HANDLE NULL PROFILE
-if (!profile) {
-  console.warn("PROFILE IS NULL");
-  showUserUI();
-  return;
-}
+    if (error) {
+      console.error("PROFILE FETCH ERROR:", error);
+      showUserUI();
+      return;
+    }
 
-// ✅ DEBUG FIRST
-console.log("PROFILE:", profile);
-console.log("ROLE VALUE:", profile.role);
+    if (!profile) {
+      console.warn("PROFILE IS NULL");
+      showUserUI();
+      return;
+    }
 
-// ✅ SAFE ROLE CHECK
-const role = (profile.role || "user").toLowerCase().trim();
+    console.log("PROFILE:", profile);
 
-if (role === "admin") {
-  console.log("ADMIN LOGGED IN");
-  showAdminUI();
-} else {
-  console.log("USER LOGGED IN");
-  showUserUI();
-}
+    const role = (profile.role || "user").toLowerCase().trim();
 
-  logoutBtn.style.display="block";
-  authModal.style.display="none";
-  console.log("PROFILE:", profile);
-console.log("ROLE VALUE:", profile?.role);
+    if (role === "admin") {
+      showAdminUI();
+    } else {
+      showUserUI();
+    }
+
+    logoutBtn.style.display = "block";
+    authModal.style.display = "none";
+
+  } catch (err) {
+    console.error("loadUser crashed:", err);
+    showUserUI(); // fallback so UI still works
+  }
 }
 
 //function that seperates admin contro ui from user ui
@@ -699,62 +703,87 @@ function showUserUI(){
 }
 
 // AUTH SUBMIT
-submitBtn.addEventListener("click", async ()=>{
-  setButtonState(submitBtn,"loading");
-  try{
-    const email=document.getElementById("email").value.trim();
-    const password=document.getElementById("password").value;
-    let student_number=document.getElementById("student_number").value.trim();
-    if(!student_number.toLowerCase().startsWith('m')){ alert("Student number missing/wrong"); setButtonState(submitBtn,"error"); return; }
-    student_number = student_number.replace(/^m/i,'');
-	
+submitBtn.addEventListener("click", async () => {
+  setButtonState(submitBtn, "loading");
+
+  try {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    let student_number = document.getElementById("student_number").value.trim();
+
+    if (!student_number.toLowerCase().startsWith('m')) {
+      alert("Student number missing/wrong");
+      setButtonState(submitBtn, "error");
+      return;
+    }
+
+    student_number = student_number.replace(/^m/i, '');
+
     if (isLogin) {
+      // 🔍 CHECK student number FIRST
+      const { data: profile, error: profileError } = await supabaseClient
+        .from('profiles')
+        .select('user_id, student_number, email')
+        .eq('email', email)
+        .single();
 
-  // 🔍 FIRST: check if student number matches BEFORE login
-  const { data: profiles, error: profileError } = await supabaseClient
-    .from('profiles')
-    .select('user_id, student_number, email')
-    .eq('email', email) // assumes email stored in profiles
-    .single();
+      if (profileError || !profile) {
+        alert("Account not found.");
+        setButtonState(submitBtn, "error");
+        return;
+      }
 
-  if (profileError || !profiles) {
-    alert("Account not found.");
-    setButtonState(submitBtn, "error");
-    return;
-  }
+      const dbStudentNumber = (profile.student_number || "")
+        .replace(/^m/i, "")
+        .toLowerCase();
 
-  const dbStudentNumber = (profiles.student_number || "")
-    .replace(/^m/i, "")
-    .toLowerCase();
+      if (dbStudentNumber !== student_number.toLowerCase()) {
+        alert("Incorrect student number");
+        setButtonState(submitBtn, "error");
+        return;
+      }
 
-  if (dbStudentNumber !== student_number.toLowerCase()) {
-    alert("Incorrect student number");
-    setButtonState(submitBtn, "error");
-    return;
-  }
+      // ✅ LOGIN
+      const { data: loginData, error: loginError } =
+        await supabaseClient.auth.signInWithPassword({ email, password });
 
-  // ✅ ONLY NOW attempt login
-  const { data: loginData, error: loginError } =
-    await supabaseClient.auth.signInWithPassword({ email, password });
+      if (loginError) {
+        alert(loginError.message);
+        setButtonState(submitBtn, "error");
+        return;
+      }
 
-  if (loginError) {
-    alert(loginError.message);
-    setButtonState(submitBtn, "error");
-    return;
-  }
+      await loadUser(loginData.user.id);
 
-  await loadUser(loginData.user.id);
-}
-	  
-    }else{
-      const display_name=document.getElementById("display_name").value.trim();
-      const phone=document.getElementById("phone").value.trim();
-      const { data, error } = await supabaseClient.auth.signUp({ email,password,options:{ data:{ display_name, phone, student_number } } });
-      if(error){ alert(error.message); setButtonState(submitBtn,"error"); return; }
+    } else {
+      // ✅ SIGN UP
+      const display_name = document.getElementById("display_name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+
+      const { error } = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { display_name, phone, student_number }
+        }
+      });
+
+      if (error) {
+        alert(error.message);
+        setButtonState(submitBtn, "error");
+        return;
+      }
+
       alert("Account created! Check your email to confirm.");
     }
-    setButtonState(submitBtn,"normal");
-  }catch(err){ console.error(err); alert("Unexpected error"); setButtonState(submitBtn,"error"); }
+
+    setButtonState(submitBtn, "normal");
+
+  } catch (err) {
+    console.error(err);
+    alert("Unexpected error");
+    setButtonState(submitBtn, "error");
+  }
 });
 
 // LOGOUT
