@@ -623,7 +623,7 @@ async function enforceAdmin() {
 
     // ❌ Not admin → instant redirect
     if (!profile || profile.role !== "admin") {
-      window.location.href("index.html");
+      window.location.href= "index.html";;
       return;
     }
 
@@ -632,7 +632,7 @@ async function enforceAdmin() {
 
   } catch (err) {
     // Fail-safe redirect (no alerts)
-    window.location.href("index.html");
+    window.location.href= "index.html";;
   }
 }
 
