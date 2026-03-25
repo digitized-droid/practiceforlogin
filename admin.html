@@ -451,17 +451,27 @@ button.active-filter:focus {
     color:  #FF8C00;
     font-weight: 600;
 }
+#logoutBtn {
+  background: #ffffff;
+  color: #1e3a8a;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+#logoutBtn:hover {
+  background: #ffcc00;
+}
 </style>
 </head>
 <header>
     <div class="header-container">
-        <img src="ursm logo.png" alt="URS Logo" class="myImage">
-  
-           
-                <h4>Admin</h4>
-      
-        
-    </div>
+    <img src="ursm logo.png" alt="URS Logo" class="myImage">
+    <h4>Admin</h4>
+
+    <!-- ✅ ADD THIS -->
+    <button id="logoutBtn" style="margin-left:auto;">Logout</button>
+</div>
 </header>
 <body>
 <br>
@@ -635,13 +645,18 @@ async function enforceAdmin() {
     window.location.href = "index.html";;
   }
 }
-
+  
 // RUN IMMEDIATELY
 enforceAdmin();
 
 
 document.addEventListener("DOMContentLoaded", async () => {
 
+  // ✅ ADD THIS AT THE TOP (or anywhere inside)
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    await supabaseClient.auth.signOut();
+    window.location.href = "index.html";
+  });
 
 const list = document.getElementById("research-list");
 const search = document.getElementById("search");
